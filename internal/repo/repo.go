@@ -14,11 +14,11 @@ type Repository interface {
 	CreateRefreshToken(ctx context.Context, refreshTokenData *refreshtoken.RefreshToken) error
 	GetUserByUserID(ctx context.Context, userID string) (*user.User, error)
 	GetUserByEmail(ctx context.Context, email string) (*user.User, error)
-	GetRefreshTokenByToken(ctx context.Context, token string) (*refreshtoken.RefreshToken, error)
-	//GetAccessTokenByToken(ctx context.Context, token string) (*token.AccessToken, error)
+	GetRefreshTokenByID(ctx context.Context, refreshTokenID string) (refreshtoken.RefreshToken, error)
 	WithTransaction(ctx context.Context, fn func(txCtx context.Context) error) error
-	UpdateRefreshToken(ctx context.Context, refreshTokenData *refreshtoken.RefreshToken) error
 	RevokeAccessTokenByUserID(ctx context.Context, userID string) error
+	RevokeRefreshTokenByUserID(ctx context.Context, userID string) error
+	GetAccessTokenByTokenID(ctx context.Context, tokenID string) (*token.AccessToken, error)
 }
 
 type impl struct {

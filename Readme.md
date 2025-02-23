@@ -1,5 +1,15 @@
-module github/com/Gajju8989/Auth_Service
+## Auth Service
+This service provides authentication and authorization functionalities for applications.
+It includes features such as user registration, login, token generation, 
+and validation using JWT (JSON Web Tokens). 
+The service is built using the Go programming language and leverages 
+the Gin framework for handling HTTP requests,
+GORM for database interactions, and Docker for containerization.
 
+## Dependencies
+
+```
+go module github/com/Gajju8989/Auth_Service
 go 1.23.0
 
 require (
@@ -44,3 +54,18 @@ require (
 	google.golang.org/protobuf v1.34.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
+
+```
+
+## To run the server
+``` terminal
+ docker-compose -f docker-compose.yml build
+ docker-compose -f docker-compose.yml up -d
+```
+
+
+## API Documentation
+
+### Postman API Documentation
+Here's the link to the API documentation for HTTP endpoints:
+- [Postman API Documentation](https://documenter.getpostman.com/view/29203481/2sAYdcsCT5#3710c810-dba4-4267-a0a2-f8fe788a34bc)

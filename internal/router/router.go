@@ -1,7 +1,6 @@
 package router
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github/com/Gajju8989/Auth_Service/internal/handler"
 	"github/com/Gajju8989/Auth_Service/internal/middleware"
@@ -21,24 +20,24 @@ func NewRouter(handler handler.Handler) MapRouter {
 
 func (r *router) SetupRoutes(engine *gin.Engine) {
 	api := engine.Group("/api")
-	v1 := api.Group("/v1")
-	auth := v1.Group("/auth")
 	{
-		auth.POST("/signup", r.handler.CreateUser)
-		auth.POST("/login", r.handler.Login)
-		auth.POST("/refresh-token", r.handler.RefreshToken)
-		auth.POST("/revoke-token", r.handler.RevokeToken)
-	}
+		v1 := api.Group("/v1")
+		{
+			auth := v1.Group("/auth")
+			{
+				authMiddleware := middleware.AuthMiddleware()
 
-	protected := v1.Group("/protected")
-	protected.Use(middleware.AuthMiddleware())
-	{
-		protected.GET("/profile", r.handler.GetProfile)
-	}
+				auth.POST("/signup", r.handler.CreateUser)
+				auth.POST("/login", r.handler.Login)
+				auth.POST("/refresh-token", middleware.RefreshMiddleware(), r.handler.RefreshToken)
+				auth.POST("/revoke-token", authMiddleware, r.handler.RevokeToken)
+			}
 
-	err := engine.Run(":8080")
-	if err != nil {
-		fmt.Print("Unable To Run The Server")
-		return
+			protected := v1.Group("/protected")
+			protected.Use(middleware.AuthMiddleware())
+			{
+				protected.GET("/profile", r.handler.GetProfile)
+			}
+		}
 	}
 }

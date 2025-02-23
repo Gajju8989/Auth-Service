@@ -21,13 +21,14 @@ func (i *impl) RevokeAccessTokenByUserID(ctx context.Context, userID string) err
 		Error
 }
 
-/*
-func (i *impl) GetAccessTokenByToken(ctx context.Context, token string) (*token.AccessToken, error) {
-	var accessToken *token.AccessToken
-	err := i.db.WithContext(ctx).
-		Where("Token_hash = ?", token).
+func (i *impl) GetAccessTokenByTokenID(ctx context.Context, tokenID string) (*token.AccessToken, error) {
+	var accessToken token.AccessToken
+	err := i.db.
+		WithContext(ctx).
+		Model(&token.AccessToken{}).
+		Where("id = ?", tokenID).
 		First(&accessToken).
 		Error
 
-	return accessToken, err
-}*
+	return &accessToken, err
+}

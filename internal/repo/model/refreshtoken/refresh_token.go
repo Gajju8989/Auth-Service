@@ -11,6 +11,6 @@ type RefreshToken struct {
 	User             user.User  `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
 	RefreshTokenHash string     `gorm:"type:varchar(255);unique;not null"`
 	ExpiresAt        time.Time  `gorm:"not null"`
-	CreatedAt        time.Time  `gorm:"default:current_timestamp"`
+	CreatedAt        time.Time  `gorm:"type:datetime(3);default:CURRENT_TIMESTAMP(3)"`
 	RevokedAt        *time.Time `gorm:"default:null"`
 }

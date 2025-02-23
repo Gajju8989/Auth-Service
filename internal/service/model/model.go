@@ -2,7 +2,7 @@ package model
 
 type UserProfileResponse struct {
 	ProfileExist bool   `json:"profile_exist"`
-	UserEmail    string `json:"email"`
+	UserEmail    string `json:"email,omitempty"`
 }
 
 type RefreshTokenRequest struct {
