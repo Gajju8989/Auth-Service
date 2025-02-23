@@ -16,9 +16,10 @@ func (h *impl) GetProfile(ctx *gin.Context) {
 		} else {
 			ctx.JSON(http.StatusInternalServerError, service.GenericResponse{
 				StatusCode: http.StatusInternalServerError,
-				Message:    "Internal server error",
+				Message:    internalServerErrorMessage,
 			})
 		}
+		
 		return
 	}
 

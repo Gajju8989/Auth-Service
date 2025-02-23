@@ -4,8 +4,6 @@ import (
 	"context"
 	"errors"
 	"github.com/google/uuid"
-	"github/com/Gajju8989/Auth_Service/internal/repo/model/refreshtoken"
-	"github/com/Gajju8989/Auth_Service/internal/repo/model/token"
 	"github/com/Gajju8989/Auth_Service/internal/service/model"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
@@ -42,43 +40,10 @@ func (s *impl) Login(ctx context.Context, req *model.UserAuthRequest) (*model.Us
 		return nil, err
 	}
 
-	hashedAccessToken, err := s.hashInput(accessToken)
+	err = s.createTokens(ctx, accessTokenUUID, refreshTokenUUID, userData.ID)
 	if err != nil {
 		return nil, err
 	}
-
-	hashedRefreshToken, err := s.hashInput(refreshToken)
-	if err != nil {
-		return nil, err
-	}
-
-	err = s.repo.WithTransaction(ctx, func(txCtx context.Context) error {
-		err = s.repo.CreateAccessToken(txCtx, &token.AccessToken{
-			ID:        accessTokenUUID,
-			UserID:    userData.ID,
-			User:      *userData,
-			TokenHash: hashedAccessToken,
-			ExpiresAt: time.Now().Add(jwtExpiryTime),
-			CreatedAt: time.Now(),
-		})
-		if err != nil {
-			return err
-		}
-
-		err = s.repo.CreateRefreshToken(txCtx, &refreshtoken.RefreshToken{
-			ID:               refreshTokenUUID,
-			UserID:           userData.ID,
-			User:             *userData,
-			RefreshTokenHash: hashedRefreshToken,
-			ExpiresAt:        time.Now().Add(refreshExpiryTime),
-			CreatedAt:        time.Now(),
-		})
-		if err != nil {
-			return err
-		}
-
-		return nil
-	})
 
 	return &model.UserAuthResponse{
 		Message: loginSuccessMsg,

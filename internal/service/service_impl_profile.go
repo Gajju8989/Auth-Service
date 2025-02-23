@@ -14,7 +14,7 @@ func (s *impl) GetProfiles(ctx context.Context, userID string) (*model.UserProfi
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, &GenericResponse{
 				StatusCode: http.StatusForbidden,
-				Message:    "invalid token",
+				Message:    invalidTokenErrMessage,
 			}
 		}
 
@@ -25,7 +25,7 @@ func (s *impl) GetProfiles(ctx context.Context, userID string) (*model.UserProfi
 	if token == nil || token.RevokedAt != nil {
 		return nil, &GenericResponse{
 			StatusCode: http.StatusForbidden,
-			Message:    "access token is invalid or revoked",
+			Message:    accessTokenIsInvalidOrRevoked,
 		}
 	}
 

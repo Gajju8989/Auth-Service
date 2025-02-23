@@ -16,12 +16,12 @@ func (h *impl) RevokeToken(ctx *gin.Context) {
 		} else {
 			ctx.JSON(http.StatusInternalServerError, service.GenericResponse{
 				StatusCode: http.StatusInternalServerError,
-				Message:    "Internal server error",
+				Message:    internalServerErrorMessage,
 			})
 		}
 
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"message": "Token revoked successfully"})
+	ctx.JSON(http.StatusOK, gin.H{messageKey: tokenRevokedSuccessfully})
 }

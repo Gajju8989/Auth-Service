@@ -1,10 +1,11 @@
 package service
 
 import (
-	"crypto/sha256"
-	"encoding/hex"
+	"context"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/google/uuid"
+	"github/com/Gajju8989/Auth_Service/internal/repo/model/refreshtoken"
+	"github/com/Gajju8989/Auth_Service/internal/repo/model/token"
 	"golang.org/x/crypto/bcrypt"
 	"time"
 )
@@ -41,20 +42,6 @@ func (s *impl) generateRefreshToken(userID string) (string, error) {
 	return refreshTokenString, nil
 }
 
-func (s *impl) hashInput(input string) (string, error) {
-	sha256Hasher := sha256.New()
-	sha256Hasher.Write([]byte(input))
-	hashedInput := sha256Hasher.Sum(nil)
-	hashedInputStr := hex.EncodeToString(hashedInput)
-
-	bcryptHashedInput, err := bcrypt.GenerateFromPassword([]byte(hashedInputStr), bcrypt.DefaultCost)
-	if err != nil {
-		return "", err
-	}
-
-	return string(bcryptHashedInput), nil
-}
-
 func (s *impl) hashPassword(input string) (string, error) {
 	hashedInput, err := bcrypt.GenerateFromPassword([]byte(input), bcrypt.DefaultCost)
 	if err != nil {
@@ -62,4 +49,30 @@ func (s *impl) hashPassword(input string) (string, error) {
 	}
 
 	return string(hashedInput), nil
+}
+
+func (s *impl) createTokens(ctx context.Context, accessTokenUUID, refreshTokenUUID, userID string) error {
+	return s.repo.WithTransaction(ctx, func(txCtx context.Context) error {
+		err := s.repo.CreateAccessToken(txCtx, &token.AccessToken{
+			ID:        accessTokenUUID,
+			UserID:    userID,
+			ExpiresAt: time.Now().Add(jwtExpiryTime),
+			CreatedAt: time.Now(),
+		})
+		if err != nil {
+			return err
+		}
+
+		err = s.repo.CreateRefreshToken(txCtx, &refreshtoken.RefreshToken{
+			ID:        refreshTokenUUID,
+			UserID:    userID,
+			ExpiresAt: time.Now().Add(refreshExpiryTime),
+			CreatedAt: time.Now(),
+		})
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
 }

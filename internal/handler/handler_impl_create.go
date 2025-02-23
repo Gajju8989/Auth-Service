@@ -10,7 +10,7 @@ import (
 func (h *impl) CreateUser(ctx *gin.Context) {
 	var req *model.UserAuthRequest
 	if err := ctx.Bind(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusBadRequest, gin.H{errorKey: err.Error()})
 		return
 	}
 
@@ -22,7 +22,7 @@ func (h *impl) CreateUser(ctx *gin.Context) {
 		} else {
 			ctx.JSON(http.StatusInternalServerError, service.GenericResponse{
 				StatusCode: http.StatusInternalServerError,
-				Message:    "Internal server error",
+				Message:    internalServerErrorMessage,
 			})
 		}
 
