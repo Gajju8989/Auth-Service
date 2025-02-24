@@ -18,7 +18,10 @@ import (
 
 func InitializeAuthService(db *gorm.DB) (router.MapRouter, error) {
 	repository := repo.NewRepository(db)
-	authService := service.NewAuthService(repository)
+	authService, err := service.NewAuthService(repository)
+	if err != nil {
+		return nil, err
+	}
 	handlerHandler := handler.NewHandler(authService)
 	mapRouter := router.NewRouter(handlerHandler)
 	return mapRouter, nil

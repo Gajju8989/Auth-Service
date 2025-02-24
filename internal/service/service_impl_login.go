@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+
 	"github.com/google/uuid"
 	"github/com/Gajju8989/Auth_Service/internal/service/model"
 	"golang.org/x/crypto/bcrypt"

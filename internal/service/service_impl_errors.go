@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+
 	"github.com/go-sql-driver/mysql"
 )
 

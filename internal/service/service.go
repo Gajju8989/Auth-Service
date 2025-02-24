@@ -2,10 +2,11 @@ package service
 
 import (
 	"context"
-	"github.com/joho/godotenv"
+	"fmt"
+	
+	"github/com/Gajju8989/Auth_Service/internal/config/jwtkey"
 	"github/com/Gajju8989/Auth_Service/internal/repo"
 	"github/com/Gajju8989/Auth_Service/internal/service/model"
-	"os"
 )
 
 type AuthService interface {
@@ -21,12 +22,11 @@ type impl struct {
 	jwtKey []byte
 }
 
-func NewAuthService(repo repo.Repository) AuthService {
-	err := godotenv.Load("local.env")
+func NewAuthService(repo repo.Repository) (AuthService, error) {
+	jwtKey, err := jwtkey.GetJWTKey()
 	if err != nil {
-		panic("Error loading .env file")
+		return nil, fmt.Errorf("failed to get JWT key: %w", err)
 	}
 
-	jwtKey := []byte(os.Getenv("JWT_SECRET_KEY"))
-	return &impl{repo: repo, jwtKey: jwtKey}
+	return &impl{repo: repo, jwtKey: jwtKey}, nil
 }

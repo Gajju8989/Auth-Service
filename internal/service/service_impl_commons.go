@@ -2,10 +2,12 @@ package service
 
 import (
 	"context"
-	"github.com/dgrijalva/jwt-go"
-	"github.com/google/uuid"
+
 	"github/com/Gajju8989/Auth_Service/internal/repo/model/refreshtoken"
 	"github/com/Gajju8989/Auth_Service/internal/repo/model/token"
+
+	"github.com/dgrijalva/jwt-go"
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 	"time"
 )
