@@ -2,23 +2,32 @@ package repo
 
 import (
 	"context"
+
 	"github/com/Gajju8989/Auth_Service/internal/repo/model/refreshtoken"
 	"github/com/Gajju8989/Auth_Service/internal/repo/model/token"
 	"github/com/Gajju8989/Auth_Service/internal/repo/model/user"
+
 	"gorm.io/gorm"
 )
 
 type Repository interface {
+	//User Table
 	CreateUser(ctx context.Context, userData *user.User) error
-	CreateAccessToken(ctx context.Context, tokenData *token.AccessToken) error
-	CreateRefreshToken(ctx context.Context, refreshTokenData *refreshtoken.RefreshToken) error
 	GetUserByUserID(ctx context.Context, userID string) (*user.User, error)
 	GetUserByEmail(ctx context.Context, email string) (*user.User, error)
-	GetRefreshTokenByID(ctx context.Context, refreshTokenID string) (refreshtoken.RefreshToken, error)
-	WithTransaction(ctx context.Context, fn func(txCtx context.Context) error) error
-	RevokeAccessTokenByUserID(ctx context.Context, userID string) error
-	RevokeRefreshTokenByUserID(ctx context.Context, userID string) error
+
+	//Access Token Table
+	CreateAccessToken(ctx context.Context, tokenData *token.AccessToken) error
 	GetAccessTokenByTokenID(ctx context.Context, tokenID string) (*token.AccessToken, error)
+	RevokeAccessTokenByUserID(ctx context.Context, userID string) error
+
+	//Refresh Token Table
+	CreateRefreshToken(ctx context.Context, refreshTokenData *refreshtoken.RefreshToken) error
+	GetRefreshTokenByID(ctx context.Context, refreshTokenID string) (refreshtoken.RefreshToken, error)
+	RevokeRefreshTokenByUserID(ctx context.Context, userID string) error
+
+	//Transaction
+	WithTransaction(ctx context.Context, fn func(txCtx context.Context) error) error
 }
 
 type impl struct {

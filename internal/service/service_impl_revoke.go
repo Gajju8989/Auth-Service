@@ -14,7 +14,7 @@ func (s *impl) RevokeToken(ctx context.Context, userID string) error {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return &GenericResponse{
 				StatusCode: http.StatusForbidden,
-				Message:    "Invalid token",
+				Message:    invalidTokenErrMessage,
 			}
 		}
 
@@ -22,17 +22,15 @@ func (s *impl) RevokeToken(ctx context.Context, userID string) error {
 	}
 
 	if tokenData.RevokedAt != nil {
-		return fmt.Errorf("refresh token is already revoked")
+		return fmt.Errorf(refreshTokenIsAlreadyRevoked)
 	}
 
 	err = s.repo.WithTransaction(ctx, func(txCtx context.Context) error {
-		err = s.repo.RevokeAccessTokenByUserID(txCtx, tokenData.UserID)
-		if err != nil {
+		if err := s.repo.RevokeAccessTokenByUserID(txCtx, tokenData.UserID); err != nil {
 			return err
 		}
 
-		err = s.repo.RevokeRefreshTokenByUserID(txCtx, tokenData.UserID)
-		if err != nil {
+		if err := s.repo.RevokeRefreshTokenByUserID(txCtx, tokenData.UserID); err != nil {
 			return err
 		}
 

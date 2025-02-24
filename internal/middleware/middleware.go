@@ -3,8 +3,8 @@ package middleware
 import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"github/com/Gajju8989/Auth_Service/internal/config/jwtkey"
 	"net/http"
-	"os"
 )
 
 func AuthMiddleware() gin.HandlerFunc {
@@ -25,9 +25,14 @@ func AuthMiddleware() gin.HandlerFunc {
 			tokenString = authHeader
 		}
 
+		jwtKey, err := jwtkey.GetJWTKey()
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "JWT Key not found"})
+		}
+
 		claims := &jwt.StandardClaims{}
 		token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
-			return []byte(os.Getenv("JWT_SECRET_KEY")), nil
+			return jwtKey, nil
 		})
 
 		if err != nil || !token.Valid {
@@ -60,8 +65,14 @@ func RefreshMiddleware() gin.HandlerFunc {
 		}
 
 		claims := &jwt.StandardClaims{}
+
+		jwtKey, err := jwtkey.GetJWTKey()
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "JWT Key not found"})
+		}
+
 		token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
-			return []byte(os.Getenv("JWT_SECRET_KEY")), nil
+			return jwtKey, nil
 		})
 
 		if err != nil || !token.Valid {

@@ -16,7 +16,7 @@ func (h *impl) RefreshToken(ctx *gin.Context) {
 		} else {
 			ctx.JSON(http.StatusInternalServerError, service.GenericResponse{
 				StatusCode: http.StatusInternalServerError,
-				Message:    "Internal server error",
+				Message:    internalServerErrorMessage,
 			})
 		}
 

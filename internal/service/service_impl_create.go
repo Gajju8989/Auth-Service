@@ -2,9 +2,11 @@ package service
 
 import (
 	"context"
-	"github.com/google/uuid"
+
 	"github/com/Gajju8989/Auth_Service/internal/repo/model/user"
 	"github/com/Gajju8989/Auth_Service/internal/service/model"
+
+	"github.com/google/uuid"
 	"net/http"
 )
 
