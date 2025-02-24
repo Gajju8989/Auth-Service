@@ -21,7 +21,7 @@ func main() {
 	}
 
 	engine := gin.Default()
-	router.SetupRoutes(gin.Default())
+	router.SetupRoutes(engine)
 	err = engine.Run(":8080")
 	if err != nil {
 		log.Fatalf("failed to run server: %v", err)
